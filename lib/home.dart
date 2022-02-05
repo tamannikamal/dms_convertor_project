@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
 
+//شاشة التطبيق الرئيسية
 class ClockApp extends StatefulWidget {
   ClockApp({Key? key}) : super(key: key);
 
@@ -11,11 +12,15 @@ class ClockApp extends StatefulWidget {
 }
 
 class _ClockAppState extends State<ClockApp> {
-
+  //لاستقبال وتخزين القيم من المستخدم
   TextEditingController controller = TextEditingController();
+  // لاستقبال قيمة الدقائق
   TextEditingController controller2 = TextEditingController();
+  // لاستقبال قيمة الثواني
   TextEditingController controller3 = TextEditingController();
+  
   //validating key
+  //يستخدم لمعرفة ماهية القيم التي تم ادخالها
   var _formKey = GlobalKey<FormState>();
   var _formKey2 = GlobalKey<FormState>();
   var _formKey3 = GlobalKey<FormState>();
@@ -23,52 +28,69 @@ class _ClockAppState extends State<ClockApp> {
   //new test
   var test = '';
   //button text
+  //متغير يحتوي على قيمة النص الدي يظهر على الزر
   String btnText = 'C A L C U L A T E';
+  
   //boolean to check if btn pressed
+  //متغير لمعرفة هل تم ضغط الزر أم لا
   bool btnPressed = false;
+  //متغير لمراقبة حالة الزر ان كانت مضغوطة
   bool toggleButton = true;
+  
   //checking output green border
+  //متغير لمعرفة هل تم إدخال قيم من المستخدم ام لا
   bool isThereResult = false;
 
+  //ثلاث متغيرات للدرجات والدقائق والثواني على التوالي
   double dig = 00;
   int min= 00;
   int sec = 00;
-
-
+  
+  //دالة تقوم بحساب وتحويل من درجات ودقائق وثواني إلى القيم الدائرية
   String Valu(){
+    //متغير  "ديقري" يخزن القيمة المدخلة في خانة الدرجات ويخزنها في المتغير الخاص بالدرجات
     String degree = controller.text;
     controller.text = degree.replaceAll(new RegExp(r'[^0-9]'),'');
     dig = double.parse(degree);
 
+    //متغير "مينتس" يخزن القيمة المقروءة من خانة ادخال الدقائق ويضعها في المتغير الخاص بالدقائق
     String minutes = controller2.text;
     controller2.text = minutes.replaceAll(RegExp(r'[^0-9]'), '');
     min = int.parse(minutes);
-
+    
+    //متغير "سيكندس" يخزن القيمة المقروءة من خانة ادخال الثواني ويضعها في المتغير الخاص بالثواني
     String seconds = controller3.text;
     controller3.text = seconds.replaceAll(RegExp(r'[^0-9]'), '');
     sec = int.parse(seconds);
 
+    //متغير يحسب الدرجات العشرية أولا من ثم يحسب الدائرية منها عبر المعادلة
     num   decDegree = dig + (min + (sec/60))/60;
     double radians = decDegree * (pi/180);
 
+    //تخزين القيمة النهائية في متغير "ريزلت" وتقريب النتيجة الى ثلاث خانات عشرية
     //toStringAsFixed to round the result (3)
     String result = radians.toStringAsFixed(3);
+    //النتيجة العائدة النهائية - حيث يتم استخدام اسم الدالة اعلاه فتقوم بارجاع القيمة الدائئرية
     return result;
   }
 
+  //هنا الكود الخاص بالشاشة وتصميمها واستخدام المتغيرات أعلاه فيها وكدلك استخدام الدالة
   @override
   Widget build(BuildContext context) {
     //media query library to fit all devies sizes
+    //الميديا كيوري يتم استخدامها لضمان ان التطبيق سيعمل على كل أحجام الشاشات دون مشاكل
     MediaQueryData queryData = MediaQuery.of(context);
 
     String res = "00";
     return SafeArea(
       child: Scaffold(
+        //خلفية الصورة للتطبيق موجودة في هدا الكونتينر
         body: Container(
           height: double.infinity,
           width: double.infinity,
           decoration: BoxDecoration(
             image: DecorationImage(
+              //صورة الخلفية
               image: AssetImage('assets/Bitmap.png'),
               fit: BoxFit.fill,
             ),
@@ -446,6 +468,7 @@ class _ClockAppState extends State<ClockApp> {
     );
   }
 
+  //تم عمل هده الميثود حتى يتم تغيير الزر وتبعا له تفريغ محتويات خانات الادخال
   ToggleButton() {
     setState(() {
       _formKey.currentState!.validate();
@@ -476,6 +499,7 @@ class _ClockAppState extends State<ClockApp> {
 
 }
 
+//تم عمل هدا الكلاس حتى نضمن ان محتويات خانة الدقائق والثواني لاتزيد عن ال60
 class CustomRangeTextInputFormatter extends TextInputFormatter {
 
   @override
